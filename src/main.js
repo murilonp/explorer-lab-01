@@ -88,6 +88,10 @@ const securityCodePattern = {
   mask: '000'
 };
 
+const cardNamePattern = {
+  mask: /^([a-zA-Zà-úÀ-Ú]|\s+)+$/
+};
+
 const setCardType = cardType => {
   const colors = {
     jcb: ['#BBC7C8', '#668698'],
@@ -109,27 +113,30 @@ const setCardType = cardType => {
 const securityCodeMasked = IMask(securityCode, securityCodePattern);
 const expirationDateMasked = IMask(expirationDate, expirationDatePattern);
 const cardNumberMasked = IMask(cardNumber, cardNumberPattern);
+const cardNameMasked = IMask(cardName, cardNamePattern);
 
 /* EVENTS */
 
 cardNumberMasked.on('accept', event => updateCardNumber(event));
 const updateCardNumber = code => {
   const ccCardNumber = document.querySelector('.cc-info .cc-number');
+
   ccCardNumber.innerText =
     code.target.value.length === 0 ? '1234 5678 9012 3456' : code.target.value;
 };
 
-cardName.addEventListener('keyup', event => {
+cardNameMasked.on('accept', event => updateCardName(event));
+const updateCardName = code => {
   const ccHolder = document.querySelector('.cc-holder .value');
-  ccHolder.innerText =
-    event.target.value.length === 0 ? 'FULANO DA SILVA' : event.target.value;
 
-  console.log(typeof event.target.value);
-});
+  ccHolder.innerText =
+    code.target.value.length === 0 ? 'FULANO DA SILVA' : code.target.value;
+};
 
 expirationDateMasked.on('accept', event => updateExpirationDate(event));
 const updateExpirationDate = code => {
   const ccExpirationDate = document.querySelector('.cc-expiration .value');
+
   ccExpirationDate.innerText =
     code.target.value.length === 0 ? '02/32' : code.target.value;
 };
@@ -137,6 +144,7 @@ const updateExpirationDate = code => {
 securityCodeMasked.on('accept', event => updateSecurityCode(event));
 const updateSecurityCode = code => {
   const ccSecurityCode = document.querySelector('.cc-security .value');
+
   ccSecurityCode.innerText =
     code.target.value.length === 0 ? '123' : code.target.value;
 };
